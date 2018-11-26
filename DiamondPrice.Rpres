@@ -1,0 +1,90 @@
+Diamond price predictor
+========================================================
+author: Isis Ibarra García
+date: November 25th, 2018
+autosize: true
+font-family: 'Helvetica'
+
+<style>
+.small-code pre code {
+  font-size: 0.875em;
+}
+</style>
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(cache = TRUE, collapse = TRUE, error = FALSE, prompt = TRUE)
+knit_theme$set(knit_theme$get("anotherdark"))
+options(width=180)
+```
+
+Introduction
+========================================================
+<small>
+This presentation is part of Developing Data Products class and has the documentation for the [**Diamond Price Prediction application**](https://isisibarra.shinyapps.io/DiamondPrice/).
+
+The application goal is to predict a diamond's price by applying a linear regression model to the selected characteristics. The user can choose a value from the following properties:
+- Carat
+- Cut
+- Color
+- Clarity
+
+The application was built using Shiny web application and deployed using the R server. Both files can be found within the [**Github repo**](https://github.com/isis-ibarra/Developing-Data-Products).
+</small>
+
+Diamonds dataset
+========================================================
+class: small-code
+<small>
+Diamonds dataset was used for this application.  
+It contains the information for 53940 diamonds with 10 variables:
+```{r echo=FALSE}
+library(ggplot2)
+```
+
+```{r echo=FALSE}
+summary(diamonds)
+```
+</small>
+
+Application functionality
+========================================================
+
+<span style = "font-weight:bold; color:green;"> Slidebar </span>
+<small>
+The application displays a sidebar, where the user can select some of the diamonds unique characteristics, such as carat, cut, clarity and color. Once selected, the application calculates the regression model and displays the predicted price.
+</small>
+
+<span style = "font-weight:bold; color:green;"> Plot </span>
+<small>
+The application plots the carats of the diamond on the x-axis and its corresponding price on the y-axis. It also help the user to make a distinction in the clarity and cut of the diamond, by subsetting the plot marks in colors (clarity) and shapes (cut). The regression line is shown on the plot as well. 
+</small>
+
+Diamonds plot
+========================================================
+
+```{r, echo=FALSE, fig.align = "center"}
+library(ggplot2)
+library(dplyr)
+library(jcolors)
+
+diamData <- diamonds[, c(1:4, 7)]
+    # 3.3 Drow plot
+    plot <- ggplot(data = diamData, aes(x = carat, y = price)) +
+                   geom_point(aes(color = clarity, shape = cut, size = I(3)), alpha = 0.3) +
+                   geom_smooth(method = "lm") +
+                   geom_vline(xintercept = 0.8, color = "black", size = 1) +
+                   geom_hline(yintercept = 3948.78, color = "black", size = 1) +
+
+                   scale_y_continuous(labels = scales::dollar) +             
+                   scale_color_jcolors("rainbow") +
+                   labs(x = "Carats", y = "Price in USD")
+    plot
+```
+
+***
+<small>
+The plot shown at the left, is the default settings used at the application. 
+
+The predicted price for a 0.8 carat diamond is $3,948.78 USD.
+</small>
